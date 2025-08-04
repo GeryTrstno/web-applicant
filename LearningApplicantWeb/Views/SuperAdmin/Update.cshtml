@@ -1,4 +1,4 @@
-﻿@model LearningApplicantWeb.Models.RoleVM.Update
+﻿@model LearningApplicantWeb.Models.SuperAdminVM.Update
 
 <form id="updateForm">
     <div class="form-group">
@@ -28,7 +28,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("SubmitUpdate", "Role")',
+                url: '@Url.Action("SubmitUpdate", "SuperAdmin")',
                 data: formData,
                 // ... sisa script Anda sama ...
                 success: function(response) {
@@ -39,7 +39,7 @@
                             title: 'Berhasil',
                             text: response.message
                         }).then(function() {
-                            window.location.href = '@Url.Action("Index", "Role")';
+                            window.location.href = '@Url.Action("Index", "SuperAdmin")';
                         });
                     } else {
                         Swal.fire({

@@ -1,5 +1,5 @@
 ﻿@* --- PERBAIKAN: Model diubah dari RoleVM.Create menjadi RoleVM.Add --- *@
-@model LearningApplicantWeb.Models.RoleVM.Add
+@model LearningApplicantWeb.Models.SuperAdminVM.Add
 
 <form id="addForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -33,7 +33,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("Submit", "Role")',
+                url: '@Url.Action("Submit", "SuperAdmin")',
                 data: formData,
                 beforeSend: function() {
                     $("#loader").show();
@@ -50,7 +50,7 @@
                             title: 'Berhasil',
                             text: response.message
                         }).then(function() {
-                            window.location.href = '@Url.Action("Index", "Role")';
+                            window.location.href = '@Url.Action("Index", "SuperAdmin")';
                         });
                     } else {
                         Swal.fire({

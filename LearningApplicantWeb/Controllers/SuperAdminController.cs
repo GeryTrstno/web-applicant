@@ -7,13 +7,13 @@ using System.Linq;
 namespace LearningApplicantWeb.Controllers
 {
     [Authorize(Roles = "1")]
-    public class RoleController : Controller
+    public class SuperAdminController : Controller
     {
         public IActionResult Index()
         {
             using (var context = DBClass.GetContext())
             {
-                var model = new RoleVM.Index
+                var model = new SuperAdminVM.Index
                 {
                     Roles = context.Roles.ToList()
                 };
@@ -24,7 +24,7 @@ namespace LearningApplicantWeb.Controllers
         // Action untuk menampilkan form
         public IActionResult Create()
         {
-            var model = new RoleVM.Add();
+            var model = new SuperAdminVM.Add();
             // Pastikan nama PartialView-nya adalah "Create"
             return PartialView("Create", model);
         }
@@ -39,7 +39,7 @@ namespace LearningApplicantWeb.Controllers
                     return Json(new { Status = "Error", Message = "Role tidak ditemukan" });
                 }
 
-                var model = new RoleVM.Update
+                var model = new SuperAdminVM.Update
                 {
                     RoleId = role.RoleId,
                     Name = role.RoleName
@@ -58,7 +58,7 @@ namespace LearningApplicantWeb.Controllers
                     return Json(new { Status = "Error", Message = "Role tidak ditemukan" });
                 }
 
-                var model = new RoleVM.Destroy
+                var model = new SuperAdminVM.Destroy
                 {
                     RoleId = role.RoleId,
                     Name = role.RoleName
@@ -70,7 +70,7 @@ namespace LearningApplicantWeb.Controllers
         // Action untuk memproses data dari form Add/Create
         [HttpPost]
         // --- PERBAIKAN: Parameter diubah dari RoleVM.Create menjadi RoleVM.Add ---
-        public IActionResult Submit(RoleVM.Add model)
+        public IActionResult Submit(SuperAdminVM.Add model)
         {
             if (!ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace LearningApplicantWeb.Controllers
 
             try
             {
-                RoleVM.Create(model);
+                SuperAdminVM.Create(model);
                 return Json(new { status = true, message = "Data Berhasil Ditambahkan" });
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace LearningApplicantWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult SubmitUpdate(RoleVM.Update model)
+        public IActionResult SubmitUpdate(SuperAdminVM.Update model)
         {
             if (!ModelState.IsValid)
             {
@@ -99,7 +99,7 @@ namespace LearningApplicantWeb.Controllers
             }
             try
             {
-                RoleVM.Edit(model);
+                SuperAdminVM.Edit(model);
                 return Json(new { status = true, message = "Data Berhasil Diupdate" });
             }
             catch (Exception ex)
@@ -113,7 +113,7 @@ namespace LearningApplicantWeb.Controllers
         {
             try
             {
-                RoleVM.Delete(id);
+                SuperAdminVM.Delete(id);
                 return Json(new { status = true, message = "Data Berhasil Dihapus" });
             }
             catch (Exception ex)

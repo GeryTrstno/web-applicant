@@ -49,7 +49,17 @@ namespace LearningApplicantWeb.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, "MyCookieAuth");
             await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
 
-            return RedirectToAction("Index", "Home");
+            switch (user.RoleId)
+            {
+                case 1: 
+                    return RedirectToAction("Index", "SuperAdmin"); // -> /SuperAdmin/Index
+                case 2: 
+                    return RedirectToAction("Index", "Admin"); // -> /Admin/Index
+                case 3: 
+                    return RedirectToAction("Index", "Applicant"); // -> /Applicant/Index
+                default:                    
+                    return RedirectToAction("Index", "Home");
+            }            
         }
 
         [HttpGet]
