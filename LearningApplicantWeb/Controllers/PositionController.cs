@@ -2,11 +2,11 @@
 
 namespace LearningApplicantWeb.Controllers
 {
-    public class LogoutController : Controller
+    public class PositionController : Controller
     {
         public IActionResult Index()
         {
-            return RedirectToAction("Index","Login");
+            return View();
         }
     }
 }

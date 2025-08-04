@@ -4,3 +4,24 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+
+<!-- Tombol untuk menampilkan modal -->
+<button type="button" class="btn btn-danger" onclick="showConfirmModal()">Delete Item</button>
+
+
+<script>
+    // Menampilkan modal
+    function showConfirmModal() {
+      var myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+      myModal.show();
+    }
+
+    // Menambahkan event listener untuk tombol konfirmasi
+    document.getElementById('confirmButton').addEventListener('click', function() {
+      // Lakukan tindakan yang diinginkan setelah konfirmasi
+      console.log("Item deleted");
+      var myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+      myModal.hide();  // Menyembunyikan modal setelah konfirmasi
+    });
+
+</script>

@@ -64,9 +64,17 @@
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-                        <a class="dropdown-item" href="@Url.Action("Index","Logout")">
-                            <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span>
-                        </a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                                    @* Gunakan link untuk men-submit form melalui JavaScript *@
+                                    <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">
+                                        <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span>
+                                    </a>
+                                </form>
+                            </li>
+                        }
                     </div>
                 </div>
             </div>

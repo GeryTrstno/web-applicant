@@ -1,0 +1,57 @@
+﻿@model LearningApplicantWeb.Models.RoleVM.Destroy
+
+<form id="destroyForm">
+    @* --- PERBAIKAN 1: Gunakan Model.RoleId --- *@
+    <input type="hidden" value="@Model.RoleId" id="roleId" />
+
+    <div class="alert alert-warning">
+        <h5><i class="fas fa-exclamation-triangle"></i> Konfirmasi Hapus</h5>
+        <p>Apakah Anda yakin ingin menghapus role berikut?</p>
+        @* --- PERBAIKAN 2: Gunakan Model.RoleId --- *@
+        <strong>ID: @Model.RoleId</strong><br>
+        <strong>Nama: @Model.Name</strong>
+    </div>
+
+    <p class="text-danger">
+        <strong>Peringatan:</strong> Tindakan ini tidak dapat dibatalkan!
+    </p>
+
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+    </div>
+</form>
+
+<script>
+    // Script di sini sudah benar dan tidak perlu diubah.
+    $(document).ready(function() {
+        $('#destroyForm').on('submit', function(e) {
+            e.preventDefault();
+            var roleId = $('#roleId').val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SubmitDestroy", "Role")',
+                data: { id: roleId },
+                // ... sisa script Anda sama ...
+                success: function(response) {
+                    if (response.status) {
+                        $("#staticBackdropLargeScrollable").modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message
+                        }).then(function() {
+                            window.location.href = '@Url.Action("Index", "Role")';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+            });
+        });
+    });
+</script>

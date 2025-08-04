@@ -1,8 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model LearningApplicantWeb.Models.HomeVM.Index
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a href="/role/index">
+        <button class="btn btn-primary">
+            Role Page
+        </button>
+    </a>
+    <a href="/Position/Index">
+        <button class="btn btn-primary">
+            Login Button
+        </button>
+    </a>
+
+    <table>
+        <thead>
+            <tr>
+                @* <th>ID</th> *@
+                <th>Nama</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Roles)
+            {
+                <tr>
+                    @* <td>@(item.RoleId)</td> *@
+                    <td>@(item.RoleName)</td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+
+
 </div>

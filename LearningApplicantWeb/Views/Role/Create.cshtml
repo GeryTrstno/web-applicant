@@ -1,0 +1,73 @@
+﻿@* --- PERBAIKAN: Model diubah dari RoleVM.Create menjadi RoleVM.Add --- *@
+@model LearningApplicantWeb.Models.RoleVM.Add
+
+<form id="addForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="RoleId" class="form-label">Role ID</label>
+        <input asp-for="RoleId" class="form-control" placeholder="Masukkan ID Role">
+        <span asp-validation-for="RoleId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Nama Role</label>
+        <input asp-for="Name" class="form-control" placeholder="Masukkan Nama Role">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Simpan</button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#addForm').on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = {
+                RoleId: $('input[name="RoleId"]').val(),
+                Name: $('input[name="Name"]').val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Submit", "Role")',
+                data: formData,
+                beforeSend: function() {
+                    $("#loader").show();
+                },
+                complete: function() {
+                    $("#loader").hide();
+                },
+                success: function(response) {
+                    if (response.status) {
+                        $("#staticBackdropLargeScrollable").modal('hide');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message
+                        }).then(function() {
+                            window.location.href = '@Url.Action("Index", "Role")';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan sistem'
+                    });
+                }
+            });
+        });
+    });
+</script>

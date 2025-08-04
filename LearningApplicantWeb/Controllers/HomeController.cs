@@ -15,7 +15,8 @@ namespace LearningApplicantWeb.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new HomeVM.Index();
+            return View(model);
         }
 
         public IActionResult Privacy()
