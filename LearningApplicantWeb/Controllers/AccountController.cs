@@ -52,7 +52,7 @@ namespace LearningApplicantWeb.Controllers
             switch (user.RoleId)
             {
                 case 1: 
-                    return RedirectToAction("Index", "SuperAdmin"); // -> /SuperAdmin/Index
+                    return RedirectToAction("Index", "Admin"); // -> /SuperAdmin/Index
                 case 2: 
                     return RedirectToAction("Index", "Admin"); // -> /Admin/Index
                 case 3: 

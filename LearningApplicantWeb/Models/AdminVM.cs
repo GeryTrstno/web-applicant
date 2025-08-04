@@ -5,7 +5,7 @@ using LearningApplicantWeb.Models.EF; // Pastikan namespace ini benar
 
 namespace LearningApplicantWeb.Models
 {
-    public class SuperAdminVM
+    public class AdminVM
     {
         // KELAS VIEWMODEL DIJADIKAN WADAH DATA MURNI
         public class Index

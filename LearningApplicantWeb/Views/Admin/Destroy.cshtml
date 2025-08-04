@@ -1,4 +1,4 @@
-﻿@model LearningApplicantWeb.Models.SuperAdminVM.Destroy
+﻿@model LearningApplicantWeb.Models.AdminVM.Destroy
 
 <form id="destroyForm">
     @* --- PERBAIKAN 1: Gunakan Model.RoleId --- *@
@@ -30,7 +30,7 @@
             var roleId = $('#roleId').val();
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("SubmitDestroy", "SuperAdmin")',
+                url: '@Url.Action("SubmitDestroy", "Admin")',
                 data: { id: roleId },
                 // ... sisa script Anda sama ...
                 success: function(response) {
@@ -41,7 +41,7 @@
                             title: 'Berhasil',
                             text: response.message
                         }).then(function() {
-                            window.location.href = '@Url.Action("Index", "SuperAdmin")';
+                            window.location.href = '@Url.Action("Index", "Admin")';
                         });
                     } else {
                         Swal.fire({
