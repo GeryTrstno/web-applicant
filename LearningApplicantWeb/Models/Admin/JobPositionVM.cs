@@ -4,7 +4,7 @@ using LearningApplicantWeb.Models.EF;
 using System;
 using System.Linq;
 
-namespace LearningApplicantWeb.Models
+namespace LearningApplicantWeb.Models.Admin
 {
     public class JobPositionVM
     {

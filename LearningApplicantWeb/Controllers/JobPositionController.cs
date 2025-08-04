@@ -1,4 +1,4 @@
-﻿using LearningApplicantWeb.Models;
+﻿using LearningApplicantWeb.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

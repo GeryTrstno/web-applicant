@@ -1,4 +1,4 @@
-﻿using LearningApplicantWeb.Models;
+﻿using LearningApplicantWeb.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,7 +13,7 @@ namespace LearningApplicantWeb.Controllers
         {
             using (var context = DBClass.GetContext())
             {
-                var model = new AdminVM.Index
+                var model = new RoleVM.Index
                 {
                     Roles = context.Roles.ToList()
                 };
@@ -25,7 +25,7 @@ namespace LearningApplicantWeb.Controllers
         [Authorize(Roles = "1")]
         public IActionResult Create()
         {
-            var model = new AdminVM.Add();
+            var model = new RoleVM.Add();
             // Pastikan nama PartialView-nya adalah "Create"
             return PartialView("Create", model);
         }
@@ -41,7 +41,7 @@ namespace LearningApplicantWeb.Controllers
                     return Json(new { Status = "Error", Message = "Role tidak ditemukan" });
                 }
 
-                var model = new AdminVM.Update
+                var model = new RoleVM.Update
                 {
                     RoleId = role.RoleId,
                     Name = role.RoleName
@@ -60,7 +60,7 @@ namespace LearningApplicantWeb.Controllers
                     return Json(new { Status = "Error", Message = "Role tidak ditemukan" });
                 }
 
-                var model = new AdminVM.Destroy
+                var model = new RoleVM.Destroy
                 {
                     RoleId = role.RoleId,
                     Name = role.RoleName
@@ -73,7 +73,7 @@ namespace LearningApplicantWeb.Controllers
         // Action untuk memproses data dari form Add/Create
         [HttpPost]
         // --- PERBAIKAN: Parameter diubah dari RoleVM.Create menjadi RoleVM.Add ---
-        public IActionResult Submit(AdminVM.Add model)
+        public IActionResult Submit(RoleVM.Add model)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace LearningApplicantWeb.Controllers
 
             try
             {
-                AdminVM.Create(model);
+                RoleVM.Create(model);
                 return Json(new { status = true, message = "Data Berhasil Ditambahkan" });
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace LearningApplicantWeb.Controllers
 
         [Authorize(Roles = "1")]
         [HttpPost]
-        public IActionResult SubmitUpdate(AdminVM.Update model)
+        public IActionResult SubmitUpdate(RoleVM.Update model)
         {
             if (!ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace LearningApplicantWeb.Controllers
             }
             try
             {
-                AdminVM.Edit(model);
+                RoleVM.Edit(model);
                 return Json(new { status = true, message = "Data Berhasil Diupdate" });
             }
             catch (Exception ex)
@@ -118,7 +118,7 @@ namespace LearningApplicantWeb.Controllers
         {
             try
             {
-                AdminVM.Delete(id);
+                RoleVM.Delete(id);
                 return Json(new { status = true, message = "Data Berhasil Dihapus" });
             }
             catch (Exception ex)

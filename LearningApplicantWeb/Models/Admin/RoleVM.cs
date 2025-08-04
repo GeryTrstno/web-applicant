@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System;
-using LearningApplicantWeb.Models.EF; // Pastikan namespace ini benar
+using LearningApplicantWeb.Models.EF;
 
-namespace LearningApplicantWeb.Models
+namespace LearningApplicantWeb.Models.Admin
 {
-    public class AdminVM
+    public class RoleVM
     {
         // KELAS VIEWMODEL DIJADIKAN WADAH DATA MURNI
         public class Index
