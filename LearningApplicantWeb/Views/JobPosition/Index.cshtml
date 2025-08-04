@@ -1,0 +1,78 @@
+﻿@model LearningApplicantWeb.Models.JobPositionVM.Index
+
+@{
+    ViewData["Title"] = "Manajemen Posisi Pekerjaan";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <button class="btn btn-success" onclick="fnAdd()">
+        <i class="fas fa-plus"></i> Tambah Posisi Baru
+    </button>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID Posisi</th>
+            <th>Nama Posisi</th>
+            <th>Dibuat Oleh</th>
+            <th>Dibuat Pada</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.JobPositions)
+        {
+            <tr>
+                <td>@item.PositionId</td>
+                <td>@item.PositionName</td>
+                <td>@item.CreatedBy</td>
+                <td>@item.CreatedAt.ToString("dd MMM yyyy HH:mm")</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="fnUpdate(@item.PositionId)">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="fnDestroy(@item.PositionId)">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        // Fungsi AJAX untuk menampilkan modal (Create, Update, Destroy)
+        function fnShowModal(url, title, data) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: data,
+                success: function (response) {
+                    if (response.Status === undefined) {
+                        $("#staticBackdropLargeScrollable .modal-title").html(title);
+                        $("#staticBackdropLargeScrollable .modal-body").html(response);
+                        $("#staticBackdropLargeScrollable").modal('show');
+                    } else {
+                        Swal.fire('Error', response.Message, 'error');
+                    }
+                }
+            });
+        }
+
+        function fnAdd() {
+            fnShowModal('@Url.Action("Create")', 'Tambah Posisi Baru');
+        }
+
+        function fnUpdate(id) {
+            fnShowModal('@Url.Action("Update")', 'Edit Posisi', { id: id });
+        }
+
+        function fnDestroy(id) {
+            fnShowModal('@Url.Action("Destroy")', 'Konfirmasi Hapus Posisi', { id: id });
+        }
+    </script>
+}

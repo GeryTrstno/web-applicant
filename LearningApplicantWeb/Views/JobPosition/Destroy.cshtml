@@ -1,0 +1,33 @@
+﻿@model LearningApplicantWeb.Models.JobPositionVM.Destroy
+
+<div class="alert alert-danger">
+    Anda yakin ingin menghapus posisi: <strong>@Model.PositionName</strong>?
+</div>
+
+<form id="destroyForm">
+    <input name="id" type="hidden" value="@Model.PositionId" />
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+    </div>
+</form>
+
+<script>
+    $('#destroyForm').on('submit', function (e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+        $.ajax({
+            url: '@Url.Action("SubmitDestroy")',
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                if (response.status) {
+                    $("#staticBackdropLargeScrollable").modal('hide');
+                    Swal.fire('Dihapus!', response.message, 'success').then(() => location.reload());
+                } else {
+                    Swal.fire('Gagal!', response.message, 'error');
+                }
+            }
+        });
+    });
+</script>

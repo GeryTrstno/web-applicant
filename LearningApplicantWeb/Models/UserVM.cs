@@ -59,7 +59,7 @@ namespace LearningApplicantWeb.Models
                     Password = BCrypt.Net.BCrypt.HashPassword(input.Password),
                     // Atur RoleId default, misal: 2 untuk 'User' atau 'Applicant'.
                     // Pastikan ID ini ada di tabel 'roles' Anda.
-                    RoleId = 2
+                    RoleId = 3
                 };
 
                 context.Users.Add(newUser);
