@@ -24,16 +24,11 @@
             <td>@Html.DisplayFor(modelItem => item.Nik)</td>
             <td>@Html.DisplayFor(modelItem => item.Phone)</td>
             <td>
-                @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
-                {
                     <a asp-action="Update" asp-route-id="@item.ApplicantId" class="btn btn-sm btn-warning">Ubah</a>
-                }
-                @if (User.IsInRole("superadmin"))
-                {
+                
                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#destroyModal" data-id="@item.ApplicantId" data-name="@item.FirstName @item.LastName">
                         Hapus
                     </button>
-                }
             </td>
         </tr>
 }

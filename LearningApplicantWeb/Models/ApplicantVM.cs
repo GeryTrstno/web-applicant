@@ -2,9 +2,5 @@
 {
     public class ApplicantVM
     {
-        public ApplicantVM()
-        {
-
-        }
     }
 }

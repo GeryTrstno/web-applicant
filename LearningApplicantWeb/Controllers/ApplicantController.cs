@@ -1,82 +1,118 @@
-﻿using LearningApplicantWeb.Models.EF;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using LearningApplicantWeb.Models.EF; // Ganti dengan namespace DbContext Anda
 
 namespace LearningApplicantWeb.Controllers
 {
-    [Authorize]
     public class ApplicantController : Controller
     {
+        // Ganti 'YourDbContext' dengan nama kelas DbContext Anda
         private readonly ModelContext _context;
 
+        // Injeksi DbContext melalui constructor
         public ApplicantController(ModelContext context)
         {
             _context = context;
         }
 
+        // GET: Applicant/Index
+        // Menampilkan daftar semua pelamar yang belum dihapus (DeletedAt == null)
         public async Task<IActionResult> Index()
         {
-            // Mengambil semua data pelamar dari database
-            var applicants = await _context.Applicants.Include(a => a.Position).ToListAsync();
+            var applicants = await _context.Applicants
+                                           .Include(a => a.Position) // Mengambil data relasi JobPosition
+                                           .Where(a => a.DeletedAt == null) // Filter untuk soft delete
+                                           .ToListAsync();
             return View(applicants);
         }
 
+        // GET: Applicant/Create
+        // Menampilkan form untuk membuat lamaran baru
         public IActionResult Create()
         {
-            // Cukup tampilkan halaman form pembuatan data
+            // Mengirim daftar posisi ke view agar bisa dipilih
+            ViewData["PositionId"] = new SelectList(_context.JobPositions, "PositionId", "PositionName");
             return View();
         }
 
+        // POST: Applicant/Create
+        // Menyimpan data dari form
         [HttpPost]
-        public async Task<IActionResult> Create(Applicant applicant)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("PositionId,FirstName,LastName,Nik,BirthPlace,BirthDate,Gender,Address,Phone,Email,Education")] Applicant applicant)
         {
-            // 'Bind' digunakan untuk keamanan, hanya menerima properti yang disebutkan
+            // Hapus validasi untuk properti yang tidak ada di form jika perlu
+            ModelState.Remove("Position");
+            ModelState.Remove("RegisterCode");
+            ModelState.Remove("CreatedBy");
+
             if (ModelState.IsValid)
             {
-
-                // Logika tambahan seperti generate RegisterCode, set CreatedBy, dll.
-                applicant.RegisterCode = $"REG-{System.Guid.NewGuid().ToString().Substring(0, 8).ToUpper()}";
-                applicant.CreatedBy = User.Identity.Name; // Mengambil username dari user yang login
-                applicant.CreatedAt = DateTime.Now;
+                // Mengisi data yang di-generate oleh sistem
+                applicant.RegisterCode = $"APP-{DateTime.Now:yyyyMMddHHmmssfff}"; // Contoh kode registrasi unik
+                applicant.CreatedAt = DateTime.UtcNow;
+                applicant.CreatedBy = User.Identity?.Name ?? "system"; // Mengambil nama user yang login, atau "system" jika tidak ada
 
                 _context.Add(applicant);
                 await _context.SaveChangesAsync();
-                // Arahkan ke halaman sukses atau dashboard pelamar
-                return RedirectToAction("Home", "Index"); // Atau halaman lain yang sesuai
+                return RedirectToAction(nameof(Index));
             }
-            // Jika model tidak valid, kembali ke form dengan data yang sudah diisi
+
+            // Jika model tidak valid, kirim kembali daftar posisi dan tampilkan form lagi dengan pesan error
+            ViewData["PositionId"] = new SelectList(_context.JobPositions, "PositionId", "PositionName", applicant.PositionId);
             return View(applicant);
         }
 
+        // GET: Applicant/Update/5
+        // Menampilkan form untuk mengubah data berdasarkan ID
         public async Task<IActionResult> Update(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var applicant = await _context.Applicants.FindAsync(id);
-            if (applicant == null) return NotFound();
+            if (applicant == null || applicant.DeletedAt != null) // Cek juga jika sudah di-soft delete
+            {
+                return NotFound();
+            }
+
+            ViewData["PositionId"] = new SelectList(_context.JobPositions, "PositionId", "PositionName", applicant.PositionId);
             return View(applicant);
         }
 
+        // POST: Applicant/Update/5
+        // Menyimpan perubahan data
         [HttpPost]
-        public async Task<IActionResult> Update(int id, Applicant applicant)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(int id, [Bind("ApplicantId,PositionId,RegisterCode,FirstName,LastName,Nik,BirthPlace,BirthDate,Gender,Address,Phone,Email,Education,CreatedBy,CreatedAt")] Applicant applicant)
         {
             if (id != applicant.ApplicantId)
             {
                 return NotFound();
             }
 
+            ModelState.Remove("Position");
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    applicant.UpdatedBy = User.Identity.Name;
+                    // Mengisi data update
                     applicant.UpdatedAt = DateTime.UtcNow;
+                    applicant.UpdatedBy = User.Identity?.Name ?? "system";
+
                     _context.Update(applicant);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Applicants.Any(e => e.ApplicantId == applicant.ApplicantId))
+                    if (!ApplicantExists(applicant.ApplicantId))
                     {
                         return NotFound();
                     }
@@ -87,21 +123,50 @@ namespace LearningApplicantWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["PositionId"] = new SelectList(_context.JobPositions, "PositionId", "PositionName", applicant.PositionId);
             return View(applicant);
         }
 
+        // POST: Applicant/Destroy/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Destroy(int id)
         {
-            var applicant = await _context.Applicants.FindAsync(id);
-            if (applicant == null) return NotFound();
+            try
+            {
+                var applicant = await _context.Applicants.FindAsync(id);
+                if (applicant == null)
+                {
+                    return Json(new { status = false, message = "Data pelamar tidak ditemukan." });
+                }
 
-            _context.Applicants.Remove(applicant);
-            await _context.SaveChangesAsync();
+                if (applicant.DeletedAt != null)
+                {
+                    return Json(new { status = false, message = "Data ini sudah dihapus sebelumnya." });
+                }
 
-            return RedirectToAction(nameof(Index));
+                // Mengisi properti untuk soft delete
+                applicant.DeletedAt = DateTime.UtcNow;
+                applicant.DeletedBy = User.Identity.Name ?? "system";
+
+                _context.Update(applicant);
+                await _context.SaveChangesAsync();
+
+                return Json(new { status = true, message = "Data pelamar berhasil dihapus." });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (optional but recommended)
+                // _logger.LogError(ex, "Error occurred while deleting applicant with ID {id}", id);
+                return Json(new { status = false, message = "Terjadi kesalahan pada server." });
+            }
         }
 
-
+        // Fungsi helper untuk mengecek apakah applicant ada di database
+        private bool ApplicantExists(int id)
+        {
+            return _context.Applicants.Any(e => e.ApplicantId == id && e.DeletedAt == null);
+        }
     }
 }

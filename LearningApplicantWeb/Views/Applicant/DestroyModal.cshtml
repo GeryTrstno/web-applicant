@@ -5,15 +5,88 @@
                 <h5 class="modal-title" id="destroyModalLabel">Konfirmasi Hapus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <form id="destroyForm" asp-action="Destroy" method="post">
+            <form id="destroyForm" method="post" asp-action="Destroy" asp-controller="Applicant">
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus data pelamar ini?</p>
+                    @* Input tersembunyi untuk menyimpan ID dan Token Anti-Forgery *@
                     @Html.AntiForgeryToken()
+                    <input type="hidden" id="applicantIdToDelete" name="id" />
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-danger">Ya, Hapus</button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        // 1. SKRIP UNTUK MENYIAPKAN MODAL SAAT DITAMPILKAN
+        const destroyModal = document.getElementById('destroyModal');
+        if (destroyModal) {
+            destroyModal.addEventListener('show.bs.modal', function (event) {
+                // Tombol yang memicu modal
+                const button = event.relatedTarget;
+
+                // Ekstrak informasi dari atribut data-*
+                const applicantId = button.getAttribute('data-id');
+                const applicantName = button.getAttribute('data-name');
+
+                // Temukan elemen di dalam modal untuk diupdate
+                const modalBody = destroyModal.querySelector('.modal-body p');
+                const hiddenInput = destroyModal.querySelector('#applicantIdToDelete');
+
+                // Update konten modal
+                modalBody.textContent = 'Apakah Anda yakin ingin menghapus data pelamar: ' + applicantName + '?';
+                hiddenInput.value = applicantId;
+            });
+        }
+
+        // 2. SKRIP UNTUK MENGIRIM FORM VIA AJAX SAAT DI-SUBMIT
+        $('#destroyForm').on('submit', function(e) {
+            e.preventDefault(); // Mencegah form submit cara biasa
+
+            const form = $(this);
+            const url = form.attr('action');
+
+            // Ambil data dari form, termasuk ID dan AntiForgeryToken
+            const formData = form.serialize();
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData, // Kirim semua data form
+                success: function(response) {
+                    $('#destroyModal').modal('hide'); // Tutup modal
+
+                    if (response.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message
+                        }).then(function() {
+                            // Muat ulang halaman untuk melihat perubahan
+                            window.location.href = '@Url.Action("Index", "Applicant")';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    $('#destroyModal').modal('hide');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terjadi kesalahan saat berkomunikasi dengan server.'
+                    });
+                }
+            });
+        });
+    });
+</script>
