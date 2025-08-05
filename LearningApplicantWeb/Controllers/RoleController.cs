@@ -1,4 +1,4 @@
-﻿using LearningApplicantWeb.Models.Admin;
+﻿using LearningApplicantWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -6,8 +6,9 @@ using System.Linq;
 
 namespace LearningApplicantWeb.Controllers
 {
-    
-    public class AdminController : Controller
+
+    [Authorize]
+    public class RoleController : Controller
     {
         public IActionResult Index()
         {

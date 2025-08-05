@@ -3,7 +3,7 @@ using System.Linq;
 using System;
 using LearningApplicantWeb.Models.EF;
 
-namespace LearningApplicantWeb.Models.Admin
+namespace LearningApplicantWeb.Models
 {
     public class RoleVM
     {

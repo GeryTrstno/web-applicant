@@ -1,10 +1,11 @@
 ﻿using LearningApplicantWeb.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 
 namespace LearningApplicantWeb.Controllers
 {
@@ -49,17 +50,7 @@ namespace LearningApplicantWeb.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, "MyCookieAuth");
             await HttpContext.SignInAsync("MyCookieAuth", new ClaimsPrincipal(claimsIdentity));
 
-            switch (user.RoleId)
-            {
-                case 1: 
-                    return RedirectToAction("Index", "Admin"); // -> /SuperAdmin/Index
-                case 2: 
-                    return RedirectToAction("Index", "Admin"); // -> /Admin/Index
-                case 3: 
-                    return RedirectToAction("Index", "Applicant"); // -> /Applicant/Index
-                default:                    
-                    return RedirectToAction("Index", "Home");
-            }            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
