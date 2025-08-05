@@ -1,4 +1,7 @@
 using LearningApplicantWeb; // Pastikan using ini ada untuk mengakses DBClass
+using LearningApplicantWeb.Models.EF;
+using Microsoft.EntityFrameworkCore; // Tambahkan using untuk ModelContext Anda
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,12 @@ builder.Services.AddAuthentication("MyCookieAuth")
         options.LoginPath = "/Account/Login"; // Halaman login jika user belum terautentikasi
         options.AccessDeniedPath = "/Home/AccessDenied"; // Halaman jika user tidak punya izin
     });
+
+builder.Services.AddDbContext<ModelContext>(options =>
+    options.UseMySql(DBClass._ConnString, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.4.3-mysql")));
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 

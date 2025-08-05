@@ -1,4 +1,5 @@
 ﻿using LearningApplicantWeb.Models;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,7 +26,7 @@ namespace LearningApplicantWeb.Controllers
         public IActionResult Create()
         {
             var model = new JobPositionVM.Add();
-            return PartialView("Create", model);
+            return PartialView("CreateModal", model);
         }
 
         // Menerima parameter JobPositionVM.Add
@@ -62,7 +63,7 @@ namespace LearningApplicantWeb.Controllers
                     PositionId = position.PositionId,
                     PositionName = position.PositionName
                 };
-                return PartialView("Update", model);
+                return PartialView("UpdateModal", model);
             }
         }
 
@@ -99,7 +100,7 @@ namespace LearningApplicantWeb.Controllers
                     PositionId = position.PositionId,
                     PositionName = position.PositionName
                 };
-                return PartialView("Destroy", model);
+                return PartialView("DestroyModal", model);
             }
         }
 

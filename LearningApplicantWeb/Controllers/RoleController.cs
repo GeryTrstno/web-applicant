@@ -28,7 +28,7 @@ namespace LearningApplicantWeb.Controllers
         {
             var model = new RoleVM.Add();
             // Pastikan nama PartialView-nya adalah "Create"
-            return PartialView("Create", model);
+            return PartialView("CreateModal", model);
         }
 
         [Authorize(Roles = "1")]
@@ -47,7 +47,7 @@ namespace LearningApplicantWeb.Controllers
                     RoleId = role.RoleId,
                     Name = role.RoleName
                 };
-                return PartialView("Update", model);
+                return PartialView("UpdateModal", model);
             }
         }
         [Authorize(Roles = "1")]
@@ -66,7 +66,7 @@ namespace LearningApplicantWeb.Controllers
                     RoleId = role.RoleId,
                     Name = role.RoleName
                 };
-                return PartialView("Destroy", model);
+                return PartialView("DestroyModal", model);
             }
         }
 

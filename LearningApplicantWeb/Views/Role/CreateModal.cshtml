@@ -33,7 +33,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("Submit", "Admin")',
+                url: '@Url.Action("Submit", "Role")',
                 data: formData,
                 beforeSend: function() {
                     $("#loader").show();
@@ -50,7 +50,7 @@
                             title: 'Berhasil',
                             text: response.message
                         }).then(function() {
-                            window.location.href = '@Url.Action("Index", "Admin")';
+                            window.location.href = '@Url.Action("Index", "Role")';
                         });
                     } else {
                         Swal.fire({

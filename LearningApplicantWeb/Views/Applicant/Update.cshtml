@@ -1,0 +1,92 @@
+﻿@model LearningApplicantWeb.Models.EF.Applicant
+
+@{
+    ViewData["Title"] = "Edit Applicant";
+}
+
+<h1>Ubah Data Pelamar</h1>
+<h4>@Model.FirstName @Model.LastName</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Update">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ApplicantId" />
+            <input type="hidden" asp-for="RegisterCode" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <input type="hidden" asp-for="CreatedAt" />
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-2">
+                    <label asp-for="FirstName" class="control-label">Nama Depan</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group mb-2">
+                    <label asp-for="LastName" class="control-label">Nama Belakang</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Nik" class="control-label">NIK</label>
+                <input asp-for="Nik" class="form-control" />
+                <span asp-validation-for="Nik" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-2">
+                    <label asp-for="BirthPlace" class="control-label">Tempat Lahir</label>
+                    <input asp-for="BirthPlace" class="form-control" />
+                    <span asp-validation-for="BirthPlace" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group mb-2">
+                    <label asp-for="BirthDate" class="control-label">Tanggal Lahir</label>
+                    <input asp-for="BirthDate" type="date" class="form-control" />
+                    <span asp-validation-for="BirthDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Gender" class="control-label">Jenis Kelamin</label>
+                <select asp-for="Gender" class="form-control">
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="1">Pria</option>
+                    <option value="0">Wanita</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Address" class="control-label">Alamat</label>
+                <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-2">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 form-group mb-2">
+                    <label asp-for="Phone" class="control-label">Nomor Telepon</label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Simpan Perubahan" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
