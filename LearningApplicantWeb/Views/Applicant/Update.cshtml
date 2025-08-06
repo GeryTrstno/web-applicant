@@ -64,6 +64,12 @@
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
 
+            <div class="form-group mb-2">
+                <label asp-for="Education" class="control-label">Pendidikan Terakhir</label>
+                <input asp-for="Education" class="form-control" />
+                <span asp-validation-for="Education" class="text-danger"></span>
+            </div>
+
             <div class="row">
                 <div class="col-md-6 form-group mb-2">
                     <label asp-for="Email" class="control-label"></label>
@@ -75,6 +81,12 @@
                     <input asp-for="Phone" class="form-control" />
                     <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="PositionId" class="control-label">Posisi yang Dilamar</label>
+                <select asp-for="PositionId" class="form-control" asp-items="ViewBag.PositionId"></select>
+                <span asp-validation-for="PositionId" class="text-danger"></span>
             </div>
 
             <div class="form-group mt-4">

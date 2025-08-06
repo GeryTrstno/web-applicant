@@ -6,6 +6,10 @@
 
 <h1>Daftar Pelamar</h1>
 
+<a href="create">
+    <button class="btn btn-success mb-3">Add Row</button>
+</a>
+
 <table class="table table-striped table-hover">
     <thead>
         <tr>
@@ -23,35 +27,103 @@
             <td>@(item.Position?.PositionName?? "N/A")</td>
             <td>@Html.DisplayFor(modelItem => item.Nik)</td>
             <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+
             <td>
-                    <a asp-action="Update" asp-route-id="@item.ApplicantId" class="btn btn-sm btn-warning">Ubah</a>
-                
-                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#destroyModal" data-id="@item.ApplicantId" data-name="@item.FirstName @item.LastName">
-                        Hapus
-                    </button>
+                <a asp-action="Update" asp-route-id="@item.ApplicantId" class="btn btn-sm btn-warning">Ubah</a>
+    
+                <button type="button" class="btn btn-sm btn-danger delete-btn" 
+                        data-id="@item.ApplicantId" 
+                        data-name="@item.FirstName @item.LastName">
+                    Hapus
+                </button>
             </td>
         </tr>
 }
     </tbody>
 </table>
 
-@await Html.PartialAsync("DestroyModal")
+@* File: Index.cshtml *@
 
 @section Scripts {
     <script>
-        var destroyModal = document.getElementById('destroyModal');
-        if(destroyModal) {
-            destroyModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var applicantId = button.getAttribute('data-id');
-                var applicantName = button.getAttribute('data-name');
+        // ===================================================================
+        // GANTI SKRIP LAMA DENGAN SKRIP BARU INI
+        // ===================================================================
+        $(document).ready(function() {
 
-                var modalBody = destroyModal.querySelector('.modal-body');
-                var form = destroyModal.querySelector('#destroyForm');
-                
-                modalBody.textContent = 'Apakah Anda yakin ingin menghapus data pelamar: ' + applicantName + '?';
-                form.action = '/Applicant/Destroy/' + applicantId;
+            // Pasang event listener pada semua tombol dengan kelas '.delete-btn'
+            $('.delete-btn').on('click', function(e) {
+                e.preventDefault(); // Mencegah perilaku default tombol
+
+                const button = $(this);
+                const applicantId = button.data('id'); // Ambil data-id
+                const applicantName = button.data('name'); // Ambil data-name
+
+                // Ambil Anti-Forgery Token dari halaman.
+                // Token ini dibuat oleh @Html.AntiForgeryToken() di salah satu form Anda,
+                // atau Anda bisa menambahkannya secara khusus di suatu tempat.
+                // Cara mudahnya adalah dengan mengasumsikan form "Create" atau "Update" ada,
+                // tapi cara paling aman adalah meletakkannya di Index.
+                // Untuk sekarang, kita asumsikan token ada di halaman.
+                const antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+                // Tampilkan dialog konfirmasi SweetAlert
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: "Anda akan menghapus data pelamar: " + applicantName,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    // JIKA PENGGUNA MENEKAN TOMBOL "YA, HAPUS!"
+                    if (result.isConfirmed) {
+
+                        // LAKUKAN PANGGILAN AJAX KE SERVER
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Destroy", "Applicant")', // URL ke action Destroy
+                            data: {
+                                id: applicantId,
+                                __RequestVerificationToken: antiForgeryToken // Kirim token
+                            },
+                            success: function(response) {
+                                if (response.status) {
+                                    // Tampilkan notifikasi sukses
+                                    Swal.fire(
+                                        'Dihapus!',
+                                        response.message,
+                                        'success'
+                                    ).then(() => {
+                                        // Muat ulang halaman untuk melihat perubahan
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    // Tampilkan notifikasi gagal
+                                    Swal.fire(
+                                        'Gagal!',
+                                        response.message,
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function() {
+                                // Tampilkan notifikasi error koneksi
+                                Swal.fire(
+                                    'Error!',
+                                    'Tidak dapat terhubung ke server.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
             });
-        }
+        });
+        // ===================================================================
+        // AKHIR DARI SKRIP BARU
+        // ===================================================================
     </script>
 }
